@@ -294,11 +294,13 @@ public class ClientUI extends javax.swing.JFrame {
         jButtonConnect.setEnabled(false);
         jButtonDisconnect.setEnabled(true);
         jButtonSendMessage.setEnabled(true);
+        jButtonSendObject.setEnabled(true);
     }
 
     private void enableConnectButton() {
         jButtonConnect.setEnabled(true);
         jButtonDisconnect.setEnabled(false);
         jButtonSendMessage.setEnabled(false);
+        jButtonSendObject.setEnabled(false);
     }
 }
