@@ -20,7 +20,7 @@ public class TCP_Server {
     }
 
     private void start(int port) throws IOException {
-        // client soketi oluşturma (sadece port numarası)
+        // server soketi oluşturma (sadece port numarası)
         ServerSocket socket = new ServerSocket(port);
         System.out.println("Server başlatıldı ..");
 
