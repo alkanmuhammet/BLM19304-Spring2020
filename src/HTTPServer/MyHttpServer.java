@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ import java.util.Map;
 public class MyHttpServer {
 
     private static HttpServer ServerSocket;
-    static String absolutePath = (Paths.get("").toAbsolutePath().toString());
 
     public static void Start() throws IOException {
         ServerSocket = HttpServer.create(new InetSocketAddress(8900), 0);
@@ -38,6 +36,7 @@ public class MyHttpServer {
 
     }
 
+    // http://localhost:8900/info
     static class InfoHandler implements HttpHandler {
 
         @Override
@@ -50,6 +49,7 @@ public class MyHttpServer {
         }
     }
 
+    // http://localhost:8900/pdf
     static class GetHandler implements HttpHandler {
 
         @Override
@@ -59,7 +59,7 @@ public class MyHttpServer {
             Headers h = handleResponse.getResponseHeaders();
             h.add("Content-Type", "application/pdf"); // dosya tipini belirtiyoruz
 
-            File file = new File(absolutePath + "/src/file/http_server.pdf"); // pdf yolu dosyayı alıyoruz
+            File file = new File("src/HTTPServer/files/http_server.pdf"); // pdf yolu dosyayı alıyoruz
             byte[] bytearray = new byte[(int) file.length()]; // bir buffer tanımlıyoruz
             FileInputStream fis = new FileInputStream(file); // dosyayı byte arraya çevireceğiz
             fis.read(bytearray, 0, bytearray.length);// dosyayı byte arraya çevirdik.
@@ -72,6 +72,8 @@ public class MyHttpServer {
         }
     }
 
+    // http://localhost:8900/index
+    // http://localhost:8900/index_post
     static class GetPageHandler implements HttpHandler {
 
         String htmlFile = "";
@@ -87,7 +89,7 @@ public class MyHttpServer {
             Headers h = handleResponse.getResponseHeaders(); // göndereceğimiz dosya tipini seçiyoruz
             h.add("Content-Type", "text/html"); // header ayarlaması yapıyoruz
 
-            File file = new File(absolutePath + "/src/file/" + this.htmlFile); // dosyayı alıyoruz
+            File file = new File("src/HTTPServer/files/" + this.htmlFile); // dosyayı alıyoruz
             byte[] bytearray = new byte[(int) file.length()];
             FileInputStream fis = new FileInputStream(file);
             fis.read(bytearray, 0, bytearray.length); // dosyayı byte arraya çevirdik
@@ -100,6 +102,7 @@ public class MyHttpServer {
         }
     }
 
+    // http://localhost:8900/get?fname=Zeki&lname=Kus&email=zkus%40fsm.edu.tr&gender=male
     static class GetParamHandler implements HttpHandler {
 
         @Override
@@ -127,8 +130,6 @@ public class MyHttpServer {
         @Override
         public void handle(HttpExchange handleResponse) throws IOException {
             // parse request
-            Map<String, Object> parameters = new HashMap<>();
-
             InputStreamReader isr = new InputStreamReader(handleResponse.getRequestBody(), "utf-8");
             BufferedReader br = new BufferedReader(isr);
             String query = br.readLine();
@@ -140,6 +141,7 @@ public class MyHttpServer {
             for (String key : params.keySet()) {
                 response += key + " = " + params.get(key) + "\n";
             }
+
             handleResponse.sendResponseHeaders(200, response.length());
             OutputStream os = handleResponse.getResponseBody();
             os.write(response.getBytes());
